@@ -81,6 +81,7 @@ if(GAME_MULTIPLAYER)
         ${GBRT_DIR}/src/multiplayer/mp_voice.cpp
         ${GBRT_DIR}/src/multiplayer/mp_pvp.cpp
         ${GBRT_DIR}/src/multiplayer/mp_sprites.cpp
+        ${GBRT_DIR}/src/multiplayer/mp_gen2_serial.cpp
     )
     target_compile_definitions(gbrt PUBLIC LA_HAS_MULTIPLAYER)
 endif()

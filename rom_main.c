@@ -6,6 +6,7 @@
 #include "platform_sdl.h"
 #ifdef LA_HAS_MULTIPLAYER
 #include "multiplayer/mp_session.h"
+#include "multiplayer/mp_gen2_serial.h"
 #endif
 #endif
 #include <stdio.h>
@@ -13,6 +14,14 @@
 #include <string.h>
 
 int max_frames = 0;  /* 0 = unlimited */
+
+/* Deferred multiplayer setup — CLI flags are parsed before
+ * gb_platform_init runs (which initialises ENet), so we can't call
+ * mp_gen2_host/connect immediately. Stash the requested action and
+ * apply it after gb_platform_init. */
+static int  g_mp_action = 0;     /* 0=none, 1=host, 2=connect */
+static uint16_t g_mp_port = 0;
+static char g_mp_host_buf[256] = {0};
 
 int main(int argc, char* argv[]) {
     for (int i = 1; i < argc; i++) {
@@ -40,6 +49,27 @@ int main(int argc, char* argv[]) {
              * side-by-side (link-cable multiplayer testing) without their
              * saves clobbering each other. */
             gb_platform_set_save_dir(argv[++i]);
+#ifdef LA_HAS_MULTIPLAYER
+        } else if (strcmp(argv[i], "--mp-host") == 0 && i + 1 < argc) {
+            /* Open a Cable Club listener on the given port. */
+            g_mp_action = 1;
+            g_mp_port = (uint16_t)atoi(argv[++i]);
+        } else if (strcmp(argv[i], "--mp-connect") == 0 && i + 1 < argc) {
+            /* Connect to an open Cable Club at host:port. */
+            const char* spec = argv[++i];
+            const char* colon = strrchr(spec, ':');
+            if (colon) {
+                size_t hostlen = (size_t)(colon - spec);
+                if (hostlen >= sizeof(g_mp_host_buf)) hostlen = sizeof(g_mp_host_buf) - 1;
+                memcpy(g_mp_host_buf, spec, hostlen);
+                g_mp_host_buf[hostlen] = '\0';
+                g_mp_port = (uint16_t)atoi(colon + 1);
+            } else {
+                strncpy(g_mp_host_buf, spec, sizeof(g_mp_host_buf) - 1);
+                g_mp_port = 0;  /* mp_gen2_connect uses default */
+            }
+            g_mp_action = 2;
+#endif
         }
     }
 
@@ -55,6 +85,13 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     gb_platform_register_context(ctx);
+#ifdef LA_HAS_MULTIPLAYER
+    if (g_mp_action == 1) {
+        mp_gen2_host(g_mp_port);
+    } else if (g_mp_action == 2) {
+        mp_gen2_connect(g_mp_host_buf, g_mp_port);
+    }
+#endif
 #endif
 
     rom_init(ctx);
