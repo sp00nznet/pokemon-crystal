@@ -30,7 +30,7 @@ Why a separate repo from Gold? Crystal carries a different ROM and a different g
 | Trace-guided recompile pass | ⏳ |
 | Day/night cycle visually confirmed | ⏳ user-test |
 | Save round-trip a full party + box | ⏳ user-test |
-| Add Crystal row to `gb-recompiled/COMPATIBILITY.md` | ⏳ |
+| Add Crystal row to `gb-recompiled/COMPATIBILITY.md` | ✅ |
 
 ---
 
