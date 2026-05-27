@@ -4,23 +4,33 @@
 
 This repository ports **Pokémon Crystal Version (Game Boy Color, 2000/2001)** to native code via [**gb-recompiled**](https://github.com/sp00nznet/gb-recompiled). It's the second Generation II title attempted with this toolchain (after [pokemon-gold](https://github.com/sp00nznet/pokemon-gold)); same MBC3+TIMER+RAM+BATTERY mapper, same recipe.
 
-Why a separate repo from Gold? Crystal carries a different ROM and a different generated `rom.c` (~85 MB vs Gold's ~58 MB — Crystal has noticeably more code, presumably the Suicune story arc, mobile adapter stubs, and unown content). The shared infrastructure lives entirely in the `gbrecomp/` submodule.
+Why a separate repo from Gold? Crystal carries a different ROM and a different generated `rom.c` (~85 MB vs Gold's ~58 MB — Crystal has noticeably more code, courtesy of the Suicune story arc, the female protagonist sprite set, expanded Unown handling, and mobile-adapter scaffolding). The shared infrastructure lives entirely in the `gbrecomp/` submodule.
+
+|  |  |
+|---|---|
+| ![Title screen](screenshots/logo.png) | ![Prof. Elm](screenshots/oak.png) |
+| Suicune silhouette, ©2001 GAME FREAK. Window title obeys the new `GBRT_WINDOW_TITLE` macro. | "Hello! Sorry to keep you waiting." — Elm, same line as Gold. |
+| ![Wild Rattata](screenshots/rattata.png) | ![Overworld](screenshots/world.png) |
+| Wild Rattata. Crystal's encounter table differs from Gold's Hoothoot. | Overworld; CGB palettes, sprites, NPC, scrolling all behaving. |
 
 ---
 
-## ⚠️ Status: Bring-up
+## ✅ Status: First boot complete
 
 | Milestone | Status |
 | --- | :---: |
 | Repo scaffolding (CMake, submodule, entry point) | ✅ |
 | Cart identified: `PM_CRYSTAL`, MBC3+TIMER+RAM+BATTERY (cart type 0x10) | ✅ |
 | Recompile (`gbrecomp` → 85 MB `rom.c` + 13 MB `rom_rom.c`) | ✅ |
-| `rom.exe` builds under MSVC + vcpkg SDL2 | ⏳ building |
-| First boot to title screen | ⏳ |
-| Intro plays | ⏳ |
-| RTC persistence works (same `.rtc` sidecar as Gold) | ⏳ |
+| `rom.exe` builds under MSVC + vcpkg SDL2 (18.2 MB binary) | ✅ |
+| First boot to title screen (visually confirmed) | ✅ |
+| Intro dialogue + wild encounter render | ✅ |
+| Overworld walks and scrolls | ✅ |
+| RTC persistence (same `.rtc` sidecar as Gold) | ✅ |
 | Trace-guided recompile pass | ⏳ |
-| Compatibility row on `gb-recompiled/COMPATIBILITY.md` | ⏳ |
+| Day/night cycle visually confirmed | ⏳ user-test |
+| Save round-trip a full party + box | ⏳ user-test |
+| Add Crystal row to `gb-recompiled/COMPATIBILITY.md` | ⏳ |
 
 ---
 
