@@ -34,6 +34,12 @@ int main(int argc, char* argv[]) {
             hwtrace_init(argv[++i]);
         } else if (strcmp(argv[i], "--frames") == 0 && i + 1 < argc) {
             max_frames = atoi(argv[++i]);
+        } else if (strcmp(argv[i], "--save-dir") == 0 && i + 1 < argc) {
+            /* Override the directory where .sav / .rtc / save-states /
+             * bindings.cfg live. Useful for running two rom.exe instances
+             * side-by-side (link-cable multiplayer testing) without their
+             * saves clobbering each other. */
+            gb_platform_set_save_dir(argv[++i]);
         }
     }
 
