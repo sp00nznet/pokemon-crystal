@@ -22,6 +22,7 @@ int max_frames = 0;  /* 0 = unlimited */
 static int  g_mp_action = 0;     /* 0=none, 1=host, 2=connect */
 static uint16_t g_mp_port = 0;
 static char g_mp_host_buf[256] = {0};
+static int  g_mp_test = 0;       /* 0=normal, 1=test-master, 2=test-slave */
 
 int main(int argc, char* argv[]) {
     for (int i = 1; i < argc; i++) {
@@ -69,6 +70,10 @@ int main(int argc, char* argv[]) {
                 g_mp_port = 0;  /* mp_gen2_connect uses default */
             }
             g_mp_action = 2;
+        } else if (strcmp(argv[i], "--mp-test-master") == 0) {
+            g_mp_test = 1;
+        } else if (strcmp(argv[i], "--mp-test-slave") == 0) {
+            g_mp_test = 2;
 #endif
         }
     }
@@ -90,6 +95,16 @@ int main(int argc, char* argv[]) {
         mp_gen2_host(g_mp_port);
     } else if (g_mp_action == 2) {
         mp_gen2_connect(g_mp_host_buf, g_mp_port);
+    }
+    /* Self-test mode: skip the entire game and just exercise the
+     * transport layer against the partner. Used to validate the
+     * Cable Club plumbing without driving two Gen 2 ROMs all the
+     * way to the in-game Trade Center. */
+    if (g_mp_test != 0) {
+        bool ok = mp_gen2_self_test(g_mp_test == 1, /*connect_timeout*/ 10000);
+        gb_platform_shutdown();
+        gb_context_destroy(ctx);
+        return ok ? 0 : 1;
     }
 #endif
 #endif
